@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ميديا سنتر - أكواد الهدايا</title>
+<style>
+body { font-family: Arial; text-align: center; margin-top: 80px; background: #000; color: #fff; }
+input, button { padding: 10px; border-radius: 8px; border: none; }
+button { background: gold; cursor: pointer; }
+#codeBox { margin-top: 20px; font-size: 22px; color: #0f0; }
+#dailyInfo { margin-top: 10px; color: #ff4444; }
+</style>
+</head>
+<body>
+
+<h1>🎬 ميديا سنتر</h1>
+<p>5 أكواد يومياً لكل شخص</p>
+
+<input type="text" id="name" placeholder="اكتب اسمك">
+<br><br>
+<button onclick="getCode()">استلم كودك</button>
+
+<div id="codeBox"></div>
+<div id="dailyInfo"></div>
+
+<script>
+function getCode() {
+  const name = document.getElementById("name").value.trim();
+  if(!name){ alert("اكتب اسمك"); return; }
+
+  const today = new Date().toISOString().split('T')[0];
+
+  fetch('/addCode', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({name, date: today})
+  })
+  .then(res => res.json())
+  .then(data => {
+    if(data.status === 'limit'){
+      document.getElementById("codeBox").innerText = "❌ انتهت أكوادك اليوم";
+    } else {
+      document.getElementById("codeBox").innerText = "🎁 كودك: " + data.code;
+    }
+    document.getElementById("dailyInfo").innerText = `📊 عدد الأكواد الموزعة اليوم: ${data.codes.length}`;
+  })
+  .catch(err => console.log(err));
+}
+</script>
+</body>
+</html>
