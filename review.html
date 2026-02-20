@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>📋 مراجعة الأكواد - الإدارة</title>
+<style>
+body { font-family: Arial; background: #111; color: #fff; padding: 20px; }
+p { margin: 10px 0; }
+</style>
+</head>
+<body>
+
+<h1>📋 مراجعة جميع الأكواد</h1>
+
+<div id="loginDiv">
+  <p>ادخل كلمة السر للوصول:</p>
+  <input type="password" id="passwordInput" placeholder="كلمة السر">
+  <button onclick="checkPassword()">دخول</button>
+</div>
+
+<div id="allCodes" style="display:none;"></div>
+
+<script>
+const ADMIN_PASSWORD = "media123";
+
+function checkPassword(){
+  const input = document.getElementById("passwordInput").value;
+  if(input === ADMIN_PASSWORD){
+    document.getElementById("loginDiv").style.display = "none";
+    document.getElementById("allCodes").style.display = "block";
+    loadCodes();
+  } else alert("❌ كلمة السر خاطئة");
+}
+
+function loadCodes(){
+  fetch('/getCodes')
+    .then(res => res.json())
+    .then(data => {
+      let display = "";
+      data.forEach(item => {
+        display += `<p><strong>${item.name} (${item.date}):</strong> ${item.codes.join(", ")}</p>`;
+      });
+      document.getElementById("allCodes").innerHTML = display;
+    });
+}
+</script>
+
+</body>
+</html>
+
